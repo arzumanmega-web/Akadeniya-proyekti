@@ -6,7 +6,7 @@ using System.Text.Json;
 namespace ConsoleApp16
 {
 
-    class Id_Name
+    abstract class Id_Name
     {
         public Id_Name()
         {
