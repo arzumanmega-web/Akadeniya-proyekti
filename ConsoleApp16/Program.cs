@@ -14,20 +14,22 @@ namespace ConsoleApp16
         public Person()
         {
             Id = Guid.NewGuid().ToString();
+            Fullname = " ";
         }
-        public Person(string? name,string? surname,int experience, string? speciality, int minAgeRange,int maxAgeRange)
+        public Person(string? name,string? surname,int age,int experience, string? speciality, int minAgeRange,int maxAgeRange)
         {
-
+            MinAgeRange = minAgeRange;
+            MaxAgeRange = maxAgeRange;
             Id = Guid.NewGuid().ToString();
             Name = name;
             Fullname = name +" "+ surname;
+            Age = age;
             Experience = experience;
             Speciality = speciality;
-            MinAgeRange = minAgeRange;
-            MaxAgeRange =maxAgeRange;
         }
 
         private readonly int MaxAgeRange;
+
         private readonly int MinAgeRange;
         private string? Name1 { get; set; }
         public string? Id { get; set; }
@@ -180,7 +182,7 @@ namespace ConsoleApp16
 
     class Teacher : Person
     {
-        public Teacher(string? Name, string? Surname, int experience, string? speciality, double Salary) : base(Name,Surname,experience,speciality, 18, 65)
+        public Teacher(string? Name, string? Surname,int age, int experience, string? speciality, double Salary) : base(Name,Surname,age,experience,speciality, 18, 65)
         {
 
             this.Surname = Surname;
@@ -228,7 +230,7 @@ namespace ConsoleApp16
 
     class Student : Person
     {
-        public Student(string? Name, string? Surname, int experience, string? speciality) : base(Name,Surname,experience,speciality, 15, 55)
+        public Student(string? Name, string? Surname,int age, int experience, string? speciality) : base(Name,Surname,age,experience,speciality, 15, 55)
         {
             this.Surname = Surname;
         }
@@ -261,6 +263,11 @@ namespace ConsoleApp16
             Console.Write("Qrupun adini daxil edin: ");
             string? Name;
             Name = Console.ReadLine();
+            if (academy?.Groups == null)
+            {
+                Console.WriteLine("Qrup siyahısı mövcud deyil!");
+                return; 
+            }
             foreach (var item in academy.Groups)
             {
                 if (item.Name == Name)
@@ -340,13 +347,15 @@ namespace ConsoleApp16
             string? Name = Console.ReadLine();
             Console.Write("Mellimin soyadini daxil edin: ");
             string? Surname = Console.ReadLine();
+            Console.Write("Mellimin yasini daxil edin: ");
+            int age = Convert.ToInt32(Console.ReadLine());
             Console.Write("Mellimin tecrube ilini daxil edin: ");
             int experience= Convert.ToInt32(Console.ReadLine());
             Console.Write("Mellimin ixtisasini daxil edin: ");
             string? speciality = Console.ReadLine();
             Console.Write("Mellimin ayliq maasini daxil edin: ");
             double Salary = Convert.ToDouble(Console.ReadLine());
-            Teacher teacher = new Teacher(Name, Surname,experience,speciality, Salary);
+            Teacher teacher = new Teacher(Name, Surname,age,experience,speciality, Salary);
             academy?.Teachers?.Add(teacher);
             Console.WriteLine($"Yeni muellim \"{teacher.Name}\" ugurla elave edildi.!");
         }
@@ -388,11 +397,13 @@ namespace ConsoleApp16
             string? Name = Console.ReadLine();
             Console.Write("Telebenin soyadini daxil edin: ");
             string? Surname = Console.ReadLine();
+            Console.Write("Telebenin yasini daxil edin: ");
+            int age = Convert.ToInt32(Console.ReadLine());
             Console.Write("Telebenin tecrube ilini daxil edin: ");
             int experience = Convert.ToInt32(Console.ReadLine());
             Console.Write("Telebenin ixtisasini daxil edin: ");
             string? speciality = Console.ReadLine();
-            Student student = new Student(Name, Surname,experience,speciality);
+            Student student = new Student(Name, Surname,age,experience,speciality);
             academy?.Students?.Add(student);
             Console.WriteLine($"Yeni telebe \"{student.Fullname}\" ugurla elave edildi.!");
         }
@@ -577,7 +588,7 @@ namespace ConsoleApp16
             foreach (var item in academy.Teachers)
             {
                 Console.WriteLine("----------------------------------------------------------------------->");
-                Console.WriteLine($"Muellimin adi soyadi: {item.Fullname} , Ixtisasi: {item.Speciality} , Tecrube ili: {item.Experience} , Ayliq maasi: {item.Salary}");
+                Console.WriteLine($"Muellimin adi soyadi: {item.Fullname} , yasi: {item.Age} , Ixtisasi: {item.Speciality} , Tecrube ili: {item.Experience} , Ayliq maasi: {item.Salary}");
                 Console.WriteLine("----------------------------------------------------------------------->");
             }
         }
@@ -591,7 +602,7 @@ namespace ConsoleApp16
             foreach (var item in academy.Students)
             {
                 Console.WriteLine("----------------------------------------------------------------------->");
-                Console.WriteLine($"Telebenin adi soyadi: {item.Fullname}  , Ixtisasi: {item.Speciality} , Tecrube ili: {item.Experience} , Orta qiymeti: {item.Score}");
+                Console.WriteLine($"Telebenin adi soyadi: {item.Fullname} , yasi: {item.Age} , Ixtisasi: {item.Speciality} , Tecrube ili: {item.Experience} , Orta qiymeti: {item.Score}");
                 Console.WriteLine("----------------------------------------------------------------------->");
             }
         }
@@ -615,6 +626,11 @@ namespace ConsoleApp16
                     Console.WriteLine($"Qrupun adi: {item.Name} , Qrupun id-si: {item.Id}");
                     Console.WriteLine("----------------------------------------------------------------------->\n");
                     Console.WriteLine("_________ Qrupun muellimi __________");
+                    if (academy?.Teachers == null)
+                    {
+                        Console.WriteLine("Muellim siyahısı mövcud deyil!");
+                        return;
+                    }
                     foreach (var ite in academy.Teachers)
                     {
 
@@ -627,6 +643,11 @@ namespace ConsoleApp16
                     }
                     Console.WriteLine();
                     Console.WriteLine("_________ Qrupun telebeleri __________");
+                    if (academy?.Students == null)
+                    {
+                        Console.WriteLine("Telebe siyahısı mövcud deyil!");
+                        return;
+                    }
                     foreach (var ite in academy.Students)
                     {
                         if (ite.GroupId == item.Id)
@@ -652,7 +673,6 @@ namespace ConsoleApp16
             }
 
             Console.WriteLine("Axtardiginiz muellimin Id-i bura yazin");
-            Group group;
             string? choice = Console.ReadLine();
             foreach (var item in academy.Teachers)
             {
@@ -677,7 +697,6 @@ namespace ConsoleApp16
             }
 
             Console.WriteLine("Axtardiginiz telebenin Id-i bura yazin");
-            Group group;
             string? choice = Console.ReadLine();
             foreach (var item in academy.Students)
             {
@@ -703,9 +722,6 @@ namespace ConsoleApp16
             }
             Console.WriteLine("Adini deyismek istediyiniz qrupun adini daxil edin.");
             string? choice = Console.ReadLine();
-            int no1 = 0;
-            int no = 0;
-
             foreach (var item in academy.Groups)
             {
                 if (item.Name == choice)
